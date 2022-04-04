@@ -1,3 +1,8 @@
+This is the project of measurement of the gauge values.
+1. detect the gauge using yolo model.
+2. measure value of needle
+
+
 <div align="center">
 <p>
    <a align="left" href="https://ultralytics.com/yolov5" target="_blank">
