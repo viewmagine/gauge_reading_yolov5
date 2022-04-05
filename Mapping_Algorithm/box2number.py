@@ -5,7 +5,8 @@ class Inference_result(object):
         if needle_ratio is None:
             needle_ratio = 0.25
         if gauge_ratio is None:
-            gauge_ratio = [0/900, 250/900, 300/900, 400/900, 500/900, 550/900, 575/900, 900/900]
+            gauge_ratio = [0/450, 140/450, 170/450, 210/450, 260/450, 300/450, 1]
+        self.gauge_label = [999, 240, 200, 200, 100, 50, 0, -100]
         self.needle_ratio = needle_ratio
         self.gauge_ratio = gauge_ratio
 
@@ -23,7 +24,7 @@ class Inference_result(object):
                     if needle_relative_pos < self.gauge_ratio[i+1]:
                         print(needle_relative_pos, self.gauge_ratio[i], self.gauge_ratio[i+1])
 
-                        return [0, 1, 2, 3, 4, 5, 6, 7, 999][i:i+2]
+                        return self.gauge_label[i:i+2]
         return "error"
 
     def result(self, positions):

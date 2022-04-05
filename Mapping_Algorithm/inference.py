@@ -19,7 +19,7 @@ print("Starting Needle Detection...\n")
 while cap:
     frame_cnt+=1
     ret, image = cap.read()
-    if frame_cnt%30 !=0:
+    if frame_cnt%10 !=0:
         continue
     print(frame_cnt)
     if not ret:
@@ -32,6 +32,8 @@ while cap:
     df_list = df[['xmin', 'ymin', 'xmax', 'ymax', 'class']].values.tolist()
     result_pos = mapping.result(df_list)
     cv2.putText(image, str(result_pos),(10, 110),fontFace=0, fontScale=2, thickness=3, color=(0, 0, 0))
+    for df in df_list:
+        cv2.rectangle(image, (int(df[0]), int(df[1])),((int(df[2]), int(df[3]))),color=(0,0,255))
     save_dir = os.path.abspath("result/"+str(frame_cnt)+".jpg")
     print(save_dir)
     cv2.imwrite(save_dir, image)
