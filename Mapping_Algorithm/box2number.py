@@ -1,48 +1,63 @@
-import cv2
 
-class Inference_gauge(object):
+
+class Inference_result(object):
     def __init__(self, needle_ratio=None, gauge_ratio = None):
-        """
-        @param boxN: [[gauge0_xywh(tuple), gauge1_xywh, ...], [needle0_xywh, needle1_xywh, ...]]
-        @param needle_ratio: [needle0_ratio, needle1_ratio, needle2_ratio...]
-        @param gauge_ratio: [gauge0_ratio, gauge1_ratio, ...]
-        """
         if needle_ratio is None:
-            needle_ratio = 0.35
+            needle_ratio = 0.25
         if gauge_ratio is None:
-            gauge_ratio = [0, 0.325, 0.45, 0.575, 0.7, 1] #[3, 5, 10, 20]
+            gauge_ratio = [0/900, 250/900, 300/900, 400/900, 500/900, 550/900, 575/900, 900/900]
         self.needle_ratio = needle_ratio
         self.gauge_ratio = gauge_ratio
 
 
     def needle_point_pixel(self, position):
         Nx1, Ny1, Nx2, Ny2 = position
-        print("Needle Point", Nx1, Ny1, Nx2, Ny2)
+        # print("Needle Point", Nx1, Ny1, Nx2, Ny2)
         return (1 - self.needle_ratio) * Ny1 + self.needle_ratio * Ny2
 
-    def map_needle_to_gauge(self, needle_relative_pos):
-        for i in range(len(self.gauge_ratio)-1):
-            if needle_relative_pos >self.gauge_ratio[i]:
-                if needle_relative_pos < self.gauge_ratio[i+1]:
-                    print(needle_relative_pos, self.gauge_ratio[i], self.gauge_ratio[i+1])
-                    return [0, 3, 5, 10, 20, 999][i:i+2]
-        print(needle_relative_pos, self.gauge_ratio[0])
-        return -1
+    def map_needle_to_gauge(self, needle_relative_poses):
+        print(needle_relative_poses)
+        for needle_relative_pos in needle_relative_poses:
+            for i in range(len(self.gauge_ratio)-1):
+                if needle_relative_pos > self.gauge_ratio[i]:
+                    if needle_relative_pos < self.gauge_ratio[i+1]:
+                        print(needle_relative_pos, self.gauge_ratio[i], self.gauge_ratio[i+1])
 
-    def result(self, position):
-        pixel_result = self.needle_point_pixel(position)
-        height, width, c = self.gauge_shape
-        needle_pos_ratio = pixel_result / height
+                        return [0, 1, 2, 3, 4, 5, 6, 7, 999][i:i+2]
+        return "error"
+
+    def result(self, positions):
+        needle_points = []
+        gauge_height = []
+        needle_pos_ratio = []
+        for pos in positions:
+            if pos[4] == 0:
+                start,height = pos[1], pos[3]-pos[1]
+                gauge_height.append((start,height))
+            if pos[4] == 1:
+                pixel_result = self.needle_point_pixel(pos[0:4])
+                needle_points.append(pixel_result)
+
+        a_zip= list(zip(gauge_height, needle_points))
+        for data in a_zip:
+            gauge_sh, needle_p = data[0], data[1]
+            gauge_s, gauge_h = gauge_sh[0], gauge_sh[1]
+            needle_pos_ratio.append((needle_p-gauge_s)/gauge_h)
+
         return self.map_needle_to_gauge(needle_pos_ratio)
 
 if __name__ == "__main__":
+    # boxN: [[gauge0_xywh(tuple), gauge1_xyxy, ...], [needle0_xywh, needle1_xywh, ...]]
     # boxN: [[gauge0_xywh(tuple), gauge1_xywh, ...], [needle0_xywh, needle1_xywh, ...]]
-    # boxN: [[gauge0_xywh(tuple), gauge1_xywh, ...], [needle0_xywh, needle1_xywh, ...]]
-    position = [[125.5078125, 41.45494079589844, 480.3267517089844, 1080.0, 0.0],
-                [1452.1253662109375, 43.88685607910156, 1782.43115234375, 1080.0, 0.0],
-                [839.5030517578125, 25.795944213867188, 1090.293212890625, 1080.0, 0.0]]
-    image_resolution = (1920, 1080)
+    position = [[126.19498443603516, 39.42572021484375, 477.67144775390625, 1080.0, 0.0],
+                [250, 650, 330, 778, 1],
+                [840.2291259765625, 31.248046875, 1086.451904296875, 1080.0, 0.0],
+                [925, 591, 1005, 765, 1],
+                [1453.159423828125, 46.44621276855469, 1780.2269287109375, 1080.0, 0.0],
+                [1573, 604, 1663, 769, 1]
+                ]
 
     image = "108.jpg"
-    inference = Inference_gauge(None, None)
+
+    inference = Inference_result(None, None)
     print(inference.result(position))
