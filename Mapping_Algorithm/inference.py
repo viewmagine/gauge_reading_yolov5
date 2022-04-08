@@ -28,15 +28,17 @@ while cap:
     results = model(image, size=640)
     # results.show()
     pandas_results = results.pandas().xyxy[0]
+    print(pandas_results)
     df = pd.DataFrame(pandas_results)
     df_list = df[['xmin', 'ymin', 'xmax', 'ymax', 'class']].values.tolist()
     result_pos = mapping.result(df_list)
-    cv2.putText(image, str(result_pos),(10, 110),fontFace=0, fontScale=2, thickness=3, color=(0, 0, 0))
-    for df in df_list:
-        cv2.rectangle(image, (int(df[0]), int(df[1])),((int(df[2]), int(df[3]))),color=(0,0,255))
-    save_dir = os.path.abspath("result/"+str(frame_cnt)+".jpg")
-    print(save_dir)
-    cv2.imwrite(save_dir, image)
+    print(result_pos)
+    # cv2.putText(image, str(result_pos),(10, 110),fontFace=0, fontScale=2, thickness=3, color=(0, 0, 0))
+    # for df in df_list:
+    #     cv2.rectangle(image, (int(df[0]), int(df[1])),((int(df[2]), int(df[3]))),color=(0,0,255))
+    # save_dir = os.path.abspath("result/"+str(frame_cnt)+".jpg")
+    # print(save_dir)
+    # cv2.imwrite(save_dir, image)
     # [
     # [126.19498443603516, 39.42572021484375, 477.67144775390625, 1080.0, 0.0],
     # [840.2291259765625, 31.248046875, 1086.451904296875, 1080.0, 0.0],

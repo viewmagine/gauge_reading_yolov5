@@ -19,12 +19,12 @@ class Inference_result(object):
     def map_needle_to_gauge(self, needle_relative_poses):
         print(needle_relative_poses)
         for needle_relative_pos in needle_relative_poses:
-            for i in range(len(self.gauge_ratio)-1):
-                if needle_relative_pos > self.gauge_ratio[i]:
-                    if needle_relative_pos < self.gauge_ratio[i+1]:
-                        print(needle_relative_pos, self.gauge_ratio[i], self.gauge_ratio[i+1])
-
-                        return self.gauge_label[i:i+2]
+            # for i in range(len(self.gauge_ratio)-1):
+            #     if needle_relative_pos > self.gauge_ratio[i]:
+            #         if needle_relative_pos < self.gauge_ratio[i+1]:
+            #             print(needle_relative_pos, self.gauge_ratio[i], self.gauge_ratio[i+1])
+            return -240*324/87*needle_relative_pos+617
+                        # return self.gauge_label[i:i+2]
         return "error"
 
     def result(self, positions):
