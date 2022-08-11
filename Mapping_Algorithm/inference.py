@@ -5,6 +5,7 @@ from box2number import Inference_result
 import os
 import glob
 import time
+
 mapping = Inference_result(None, None)
 
 model = torch.hub.load('ultralytics/yolov5', 'custom', path='miraes/exp2/weights/best.pt')

@@ -214,7 +214,7 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
         # Print time (inference-only)
         LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)')
     
-    # 0407 
+    # 0407
     all_list = []
 
     all_list.append(gauge_list)
@@ -225,7 +225,7 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
     print(result_pos)
 
     cv2.putText(im0, str(result_pos),(10, 110),fontFace=0, fontScale=2, thickness=3, color=(0, 0, 0))
-    cv2.imwrite('/home/mirae/gauge/gauge_reading_yolov5/runs/detect/test.jpg', im0)
+    cv2.imwrite('test.jpg', im0)
 
 
 

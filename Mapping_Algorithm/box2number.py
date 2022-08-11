@@ -2,6 +2,20 @@
 
 class Inference_result(object):
     def __init__(self, needle_ratio=None, gauge_ratio = None):
+        """
+        @param needle_ratio: (float) ratio of points from needle.
+             ---  <-  needle_ratio = 0
+            |   | <-  needle_ratio = 0.33                  <-bBox of needle ratio
+            |   | <-  needle_ratio = 0.66
+             ---  <-  needle_ratio = 1
+        @param gauge_ratio: (list of float)
+             -------  <-  gauge_ratio = 0
+            |   120   | <-  gauge_ratio = 0.33                  <-bBox of needle ratio
+            |   240   | <-  gauge_ratio = 0.66
+             -------  <-  gauge_ratio = 1
+             -> gauge_ratio = [ 0, 0.33, 0.66, 1]  \\ gauge_label = [-999, 120, 240, 999]
+             You may define inf. and -inf. as you want. i.e) -999, 999
+        """
         if needle_ratio is None:
             needle_ratio = 0.25
         if gauge_ratio is None:
@@ -12,11 +26,19 @@ class Inference_result(object):
 
 
     def needle_point_pixel(self, position):
+        """
+        @param position: BBox of needle position
+        @return: position of relative points(needle 내 상대적 눈금) from needle
+        """
         Nx1, Ny1, Nx2, Ny2 = position
         # print("Needle Point", Nx1, Ny1, Nx2, Ny2)
         return (1 - self.needle_ratio) * Ny1 + self.needle_ratio * Ny2
 
     def map_needle_to_gauge(self, needle_relative_poses):
+        """
+        @param needle_relative_poses: position of needle compare to gauge. if needle is on top, it is 0
+        @return: answer what we want(눈금)
+        """
         print(needle_relative_poses)
         for needle_relative_pos in needle_relative_poses:
             # for i in range(len(self.gauge_ratio)-1):
