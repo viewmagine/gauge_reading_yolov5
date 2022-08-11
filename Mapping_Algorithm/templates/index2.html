@@ -1,0 +1,33 @@
+<!--index.html-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="refresh" content="1">
+    <meta charset="UTF-8">
+    <title>TEST</title>
+    <H1> test </H1>
+</head>
+<body>
+<br>
+<br>
+	<table class="table table-hover table-striped text-center" style=" width: 50%; border: 1px  solid #111114;">
+		<thead>
+			<tr>
+				<center>
+				<th>번호</th>
+				</center>
+			</tr>
+		</thead>
+
+	    <tbody>
+			{% for i in data_list %}
+			<tr>
+				<td><center>{{ i[0] }}</center></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+
+	</table>
+
+</body>
+</html>

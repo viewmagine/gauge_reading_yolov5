@@ -21,7 +21,7 @@ Usage - formats:
                                          yolov5s.tflite             # TensorFlow Lite
                                          yolov5s_edgetpu.tflite     # TensorFlow Edge TPU
 """
-
+DEBUG_MODE = 0
 import argparse
 import os
 import sys
@@ -44,7 +44,9 @@ from utils.plots import Annotator, colors, save_one_box
 from utils.torch_utils import select_device, time_sync
 
 from Mapping_Algorithm.box2number import Inference_result
+
 mapping = Inference_result(None, None)
+
 
 @torch.no_grad()
 def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
@@ -160,7 +162,7 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
 
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
-                    
+
                     # 0407 --------------------------------
                     c = int(cls)  # integer class
                     detect_xy = torch.tensor(xyxy).tolist()
@@ -168,6 +170,8 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
                     if c == 0:
                         gauge_tmp = [detect_xy[0], detect_xy[1], detect_xy[2], detect_xy[3], c]
                         gauge_list.extend(gauge_tmp)
+                        import time
+                        time.sleep(1)
                     elif c == 1:
                         needle_tmp = [detect_xy[0], detect_xy[1], detect_xy[2], detect_xy[3], c]
                         needle_list.extend(needle_tmp)
@@ -213,22 +217,25 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
 
         # Print time (inference-only)
         LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)')
-    
+        print(gauge_list)
+        print("======================")
+
     # 0407
     all_list = []
 
     all_list.append(gauge_list)
     all_list.append(needle_list)
-    print(all_list)
+    if DEBUG_MODE:
+        print(all_list)
 
     result_pos = mapping.result(all_list)
-    print(result_pos)
+    if DEBUG_MODE:
+        print(result_pos)
 
-    cv2.putText(im0, str(result_pos),(10, 110),fontFace=0, fontScale=2, thickness=3, color=(0, 0, 0))
-    cv2.imwrite('test.jpg', im0)
-
-
-
+    cv2.putText(im0, str(result_pos), (10, 110), fontFace=0, fontScale=2, thickness=3, color=(0, 0, 0))
+    cv2.imwrite(os.path.abspath("result/result.jpg"), im0)
+    import time
+    time.sleep(3)
     # Print results
     t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
     LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t)

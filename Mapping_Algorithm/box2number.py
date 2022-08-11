@@ -17,7 +17,7 @@ class Inference_result(object):
              You may define inf. and -inf. as you want. i.e) -999, 999
         """
         if needle_ratio is None:
-            needle_ratio = 0.25
+            needle_ratio = 10/30
         if gauge_ratio is None:
             gauge_ratio = [0/450, 140/450, 170/450, 210/450, 260/450, 300/450, 1]
         self.gauge_label = [999, 240, 200, 200, 100, 50, 0, -100]
@@ -39,14 +39,36 @@ class Inference_result(object):
         @param needle_relative_poses: position of needle compare to gauge. if needle is on top, it is 0
         @return: answer what we want(눈금)
         """
+        # print(needle_relative_poses)
+        # for needle_relative_pos in needle_relative_poses:
+        #     # for i in range(len(self.gauge_ratio)-1):
+        #     #     if needle_relative_pos > self.gauge_ratio[i]:
+        #     #         if needle_relative_pos < self.gauge_ratio[i+1]:
+        #     #             print(needle_relative_pos, self.gauge_ratio[i], self.gauge_ratio[i+1])
+        #     return -240*324/87*needle_relative_pos+617
+        #                 # return self.gauge_label[i:i+2]
         print(needle_relative_poses)
         for needle_relative_pos in needle_relative_poses:
-            # for i in range(len(self.gauge_ratio)-1):
-            #     if needle_relative_pos > self.gauge_ratio[i]:
-            #         if needle_relative_pos < self.gauge_ratio[i+1]:
-            #             print(needle_relative_pos, self.gauge_ratio[i], self.gauge_ratio[i+1])
-            return -240*324/87*needle_relative_pos+617
-                        # return self.gauge_label[i:i+2]
+            print(needle_relative_pos)
+            if needle_relative_pos <= 73 / 240:
+                return "more than 360"
+            elif needle_relative_pos <= 85 / 240:
+                return -(240 * 60) / (85 - 73) * (needle_relative_pos - 85 / 240) + 300
+            elif needle_relative_pos <= 96.5 / 240:
+                return -(240 * 50) / (96.5 - 85) * (needle_relative_pos - 96.5 / 240) + 250
+            elif needle_relative_pos <= 108 / 240:
+                return -(240 * 50) / (108 - 96.5) * (needle_relative_pos - 108 / 240) + 200
+            elif needle_relative_pos <= 121.5 / 240:
+                return -(240 * 50) / (121.5 - 108) * (needle_relative_pos - 121.5 / 240) + 150
+            elif needle_relative_pos <= 135 / 240:
+                return -(240 * 50) / (135 - 121.5) * (needle_relative_pos - 135 / 240) + 100
+            elif needle_relative_pos <= 150 / 240:
+                return -(240 * 50) / (150 - 135) * (needle_relative_pos - 150 / 240) + 50
+            elif needle_relative_pos <= 160 / 240:
+                return -(240 * 3) / (153 - 150) * (needle_relative_pos - 153 / 240) + 36
+
+            # return -1008*needle_relative_pos+658.2
+            # return self.gauge_label[i:i+2]
         return "error"
 
     def result(self, positions):
